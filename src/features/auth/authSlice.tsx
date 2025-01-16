@@ -7,9 +7,8 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  loginStatus: JSON.parse(localStorage.getItem("user") || "{}").id
-    ? true
-    : false,
+  loginStatus:
+    JSON.parse(localStorage.getItem("user") || "{}") !== null ? true : false,
   userData: JSON.parse(localStorage.getItem("user") || "{}"),
 };
 
@@ -24,10 +23,15 @@ export const authSlice = createSlice({
       customerApi
         .login(action.payload)
         .then((res) => {
-          console.log(res, "res");
+          if (res.customerAccessTokenCreate.customerUserErrors.length) {
+            return false;
+          }
+          localStorage.setItem(
+            "user",
+            JSON.stringify(res.customerAccessTokenCreate.customerAccessToken)
+          );
+          state.loginStatus = true;
           return true;
-          // localStorage.setItem("user", JSON.stringify(res));
-          // state.loginStatus = true;
         })
         .catch((err) => {
           console.log(err, "err");
@@ -41,6 +45,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setLoginStatus, login } = authSlice.actions;
+export const { setLoginStatus, login, logout } = authSlice.actions;
 
 export default authSlice.reducer;

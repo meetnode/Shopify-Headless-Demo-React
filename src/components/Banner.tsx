@@ -10,9 +10,9 @@ const Banner = () => {
 
   useEffect(() => {
     frontpageApi.banner().then((res) => {
-      setBannerImages(res.data.bannerImages);
-      setTitleField(res.data.titleField.value);
-      setSubtitleField(res.data.subTitleField.value);
+      setBannerImages(res.mediaDetails);
+      setTitleField(res.titleField.value);
+      setSubtitleField(res.subTitleField.value);
     });
   }, []);
 

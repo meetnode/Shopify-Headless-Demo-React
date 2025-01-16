@@ -5,6 +5,10 @@ const headerApi = {
     const response = await axios.get("/");
     return JSON.parse(response.data);
   },
+  async market() {
+    const response = await axios.get("/market");
+    return JSON.parse(response.data);
+  },
 };
 
 export default headerApi;

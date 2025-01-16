@@ -114,7 +114,6 @@ const Cart = () => {
                           aria-hidden="true"
                         />
                       )}
-
                       <span>
                         {product?.stock ? "In stock" : `Out of stock`}
                       </span>

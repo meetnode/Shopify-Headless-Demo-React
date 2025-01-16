@@ -1,4 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { checkoutAction, searchAction } from "./actions/index";
+import client from "./config/storefront";
+import { GET_HOMEPAGE_BANNER } from "./constants/homepageQuery";
 import {
   Cart,
   Checkout,
@@ -14,11 +17,12 @@ import {
   SingleProduct,
   UserProfile,
 } from "./pages";
-import { checkoutAction, searchAction } from "./actions/index";
-import { shopCategoryLoader } from "./pages/Shop";
-import { loader as orderHistoryLoader } from "./pages/OrderHistory";
-import { loader as singleOrderLoader } from "./pages/SingleOrderHistory";
 import AboutUs from "./pages/AboutUs";
+import ErrorPage from "./pages/ErrorPage";
+import { loader as orderHistoryLoader } from "./pages/OrderHistory";
+import { shopCategoryLoader } from "./pages/Shop";
+import { loader as singleOrderLoader } from "./pages/SingleOrderHistory";
+import "./utils/i18n";
 
 const router = createBrowserRouter([
   {
@@ -79,17 +83,25 @@ const router = createBrowserRouter([
       },
       {
         path: "about-us",
-        element: <AboutUs />
+        element: <AboutUs />,
       },
       {
         path: "order-history/:id",
         element: <SingleOrderHistory />,
-        loader: singleOrderLoader
+        loader: singleOrderLoader,
+      },
+      {
+        path: "/error-page",
+        element: <ErrorPage />,
       },
     ],
   },
 ]);
 
+function fetchProducts() {
+  
+}
+fetchProducts();
 function App() {
   return <RouterProvider router={router} />;
 }

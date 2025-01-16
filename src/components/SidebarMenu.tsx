@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { HiXMark } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks";
-import { setLoginStatus } from "../features/auth/authSlice";
+import { logout } from "../features/auth/authSlice";
 import { store } from "../store";
 
 const SidebarMenu = ({
@@ -19,10 +19,10 @@ const SidebarMenu = ({
   const { loginStatus } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  const logout = () => {
-    toast.error("Logged out successfully");
+  const logoutHandle = () => {
+    toast.success("Logged out successfully");
     localStorage.removeItem("user");
-    store.dispatch(setLoginStatus(false));
+    store.dispatch(logout());
     navigate("/login");
   };
 
@@ -30,7 +30,7 @@ const SidebarMenu = ({
     if (isSidebarOpen) {
       setIsAnimating(true);
     } else {
-      const timer = setTimeout(() => setIsAnimating(false), 300); // Match the transition duration
+      const timer = setTimeout(() => setIsAnimating(false), 300);
       return () => clearTimeout(timer);
     }
   }, [isSidebarOpen]);
@@ -59,38 +59,36 @@ const SidebarMenu = ({
               {name}
             </Link>
           </div>
-          <div className="flex justify-center mt-2">
-            <Link
-              to="/about-us"
-              className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
-            >
-              About us
-            </Link>
-          </div>
           <div className="flex flex-col items-center gap-1 mt-7">
             <Link
               to="/"
-              className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+              className="py-2 border-y border-secondaryBrown w-full flex justify-center"
             >
               Home
             </Link>
             <Link
+              to="/about-us"
+              className="py-2 border-y border-secondaryBrown w-full flex justify-center"
+            >
+              About us
+            </Link>
+            <Link
               to="/shop"
-              className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+              className="py-2 border-y border-secondaryBrown w-full flex justify-center"
             >
               Shop
             </Link>
             <Link
               to="/search"
-              className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+              className="py-2 border-y border-secondaryBrown w-full flex justify-center"
             >
               Search
             </Link>
             {loginStatus ? (
               <>
                 <button
-                  onClick={logout}
-                  className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+                  onClick={logoutHandle}
+                  className="py-2 border-y border-secondaryBrown w-full flex justify-center"
                 >
                   Logout
                 </button>
@@ -99,13 +97,13 @@ const SidebarMenu = ({
               <>
                 <Link
                   to="/login"
-                  className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+                  className="py-2 border-y border-secondaryBrown w-full flex justify-center"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+                  className="py-2 border-y border-secondaryBrown w-full flex justify-center"
                 >
                   Sign up
                 </Link>
@@ -113,7 +111,7 @@ const SidebarMenu = ({
             )}
             <Link
               to="/cart"
-              className="py-2 border-y border-secondaryBrown w-full block flex justify-center"
+              className="py-2 border-y border-secondaryBrown w-full flex justify-center"
             >
               Cart
             </Link>

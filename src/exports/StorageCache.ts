@@ -65,8 +65,6 @@ export class StorageCache {
         (key) => prefixKey && key.indexOf(prefixKey) == 0
       );
 
-      console.log("storage keys:", keys);
-
       ///remove all items
       for (const key of keys) {
         localStorage.removeItem(key);
