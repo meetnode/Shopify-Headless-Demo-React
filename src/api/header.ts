@@ -1,13 +1,11 @@
 import axios from "../axios/custom";
+import client from "../config/storefront";
+import { SHOP_DETAILS } from "../constants/headerQuery";
 
 const headerApi = {
   async siteData() {
-    const response = await axios.get("/");
-    return JSON.parse(response.data);
-  },
-  async market() {
-    const response = await axios.get("/market");
-    return JSON.parse(response.data);
+    const response = await client.request(SHOP_DETAILS)
+    return response.data.shop
   },
 };
 

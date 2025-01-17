@@ -10,7 +10,7 @@ const HomeLayout = () => {
   useEffect(() => {
     const data = headerApi.siteData();
     data.then((res) => {
-      setSiteData(res.data);
+      setSiteData(res);
     });
   }, []);
   return (

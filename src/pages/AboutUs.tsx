@@ -6,14 +6,17 @@ const AboutUs = () => {
   const [content, setContent] = useState("");
   useEffect(() => {
     aboutUsApi.all().then((res) => {
-      setContent(res.body_html);
+      setContent(res);
     });
+    setTitle("About us");
   }, []);
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="text-3xl my-5 text-center">{title || 'About us'}</div>
-      <div dangerouslySetInnerHTML={{ __html: content }}/>
-    </div>
+    <>
+      <div className="max-w-5xl mx-auto">
+        <div className="text-3xl my-5 text-center">{title}</div>
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </div>
+    </>
   );
 };
 

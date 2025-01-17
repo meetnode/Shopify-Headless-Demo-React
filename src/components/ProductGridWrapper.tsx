@@ -9,7 +9,7 @@ import productApi from "../api/Products";
 
 // Assuming the Product type looks something like this:
 interface Product {
-  id: number;
+  id: string;
   title: string;
   price: string; // price is a string in your object, we will convert it to number
   category?: string;
@@ -44,11 +44,11 @@ const ProductGridWrapper = ({
       }
 
       // Fetching products from the API
-      const response = await productApi.all();
-      const allProducts = await response.data;
-
-      let searchedProducts = allProducts.filter((product: Product) =>
-        product.title.toLowerCase().includes(query.toLowerCase())
+      const allProducts = await productApi.all();
+      let searchedProducts = allProducts.filter(
+        (product: Product) =>
+          product.title.toLowerCase().includes(query.toLowerCase()) ||
+          product.title
       );
 
       // Filter by category if provided
@@ -72,7 +72,7 @@ const ProductGridWrapper = ({
         searchedProducts = searchedProducts.sort(
           (a: Product, b: Product) => parseFloat(b.price) - parseFloat(a.price)
         );
-      } 
+      }
       // else if (sort === "popularity") {
       //   searchedProducts = searchedProducts.sort(
       //     (a: Product, b: Product) => b.popularity - a.popularity // Make sure the 'popularity' field exists in your product
@@ -81,11 +81,14 @@ const ProductGridWrapper = ({
 
       // Limit the number of products displayed based on page/limit
       if (limit) {
+        console.log(searchedProducts, "searchedProducts");
         setProducts(searchedProducts.slice(0, limit));
         dispatch(setShowingProducts(searchedProducts.slice(0, limit).length));
       } else if (page) {
         setProducts(searchedProducts.slice(0, page * 9)); // Adjust according to pagination
-        dispatch(setShowingProducts(searchedProducts.slice(0, page * 9).length));
+        dispatch(
+          setShowingProducts(searchedProducts.slice(0, page * 9).length)
+        );
       } else {
         setProducts(searchedProducts);
         dispatch(setShowingProducts(searchedProducts.length));

@@ -42,10 +42,10 @@ const SingleProduct = () => {
 
   useEffect(() => {
     if (singleProduct && selectedVariant) {
-      const data = singleProduct.images.find((item) =>
-        item.variant_ids.includes(selectedVariant.id)
+      const data = singleProduct.images.edges.find(
+        ({ node: item }) => item.id == selectedVariant.image.id
       );
-      if (data) setSelectedImage(data);
+      if (data) setSelectedImage(data.node.src);
     }
   }, [selectedVariant]);
 
@@ -53,14 +53,14 @@ const SingleProduct = () => {
     const fetchSingleProduct = async () => {
       try {
         const response = await productApi.single(params.id);
-        const product = response.data;
+        const product = response;
 
         setSingleProduct(product);
-        if (product.images && product.images.length > 0) {
-          setSelectedImage(product.images[0].src);
+        if (product.images && product.images.edges.length > 0) {
+          setSelectedImage(product.images.edges[0].node.src);
         }
-        if (product.variants && product.variants.length > 0) {
-          setSelectedVariant(product.variants[0]);
+        if (product.variants && product.variants.edges.length > 0) {
+          setSelectedVariant(product.variants.edges[0].node);
         }
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -70,7 +70,7 @@ const SingleProduct = () => {
     const fetchProducts = async () => {
       try {
         const response = await productApi.all();
-        setProducts(response.data);
+        setProducts(response);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
@@ -89,7 +89,7 @@ const SingleProduct = () => {
     setZoomStyle({
       display: "block",
       backgroundImage: `url(${
-        selectedImage.src || singleProduct?.images?.[0]?.src
+        selectedImage || singleProduct?.images?.edges[0].node?.src
       })`,
       backgroundPosition: `${x}% ${y}%`,
     });
@@ -104,15 +104,15 @@ const SingleProduct = () => {
       dispatch(
         addProductToTheCart({
           id: selectedVariant.id,
-          image: singleProduct.image.src,
+          image: selectedImage || singleProduct.images.edges[0].node.src,
           title: singleProduct.title,
-          category: singleProduct.product_type,
+          category: singleProduct.productType,
           price: selectedVariant.price,
           quantity,
           stock:
-            selectedVariant.inventory_quantity < 0
+            selectedVariant.quantityAvailable < 0
               ? 0
-              : selectedVariant.inventory_quantity,
+              : selectedVariant.quantityAvailable,
         })
       );
       toast.success("Product added to the cart");
@@ -131,7 +131,7 @@ const SingleProduct = () => {
               onMouseLeave={handleMouseLeave}
             >
               <img
-                src={selectedImage.src || singleProduct?.images?.[0]?.src}
+                src={selectedImage || singleProduct?.images?.edges[0].node?.src}
                 className="object-cover w-full h-full"
                 alt={singleProduct?.title}
               />
@@ -145,18 +145,18 @@ const SingleProduct = () => {
             </div>
 
             <div className="flex gap-2 overflow-x-auto h-32">
-              {singleProduct?.images?.map((image: any, index: number) => (
+              {singleProduct?.images.edges?.map((image: any, index: number) => (
                 <div
                   key={index}
                   className={`w-24 h-24 cursor-pointer border-2 ${
-                    selectedImage.src === image.src
+                    selectedImage === image.node.src
                       ? "border-secondaryBrown"
                       : "border-transparent"
                   }`}
-                  onClick={() => setSelectedImage(image)}
+                  onClick={() => setSelectedImage(image.node.src)}
                 >
                   <img
-                    src={image.src}
+                    src={image.node.src}
                     className="object-cover w-full h-full"
                     alt={`${singleProduct?.title} - ${index + 1}`}
                   />
@@ -172,31 +172,33 @@ const SingleProduct = () => {
             <h1 className="text-4xl font-thin">{singleProduct?.title}</h1>
             <div className="flex justify-between items-center">
               <p className="text-base text-secondaryBrown">
-                {singleProduct?.product_type || ""}
+                {singleProduct?.productType || ""}
               </p>
               <p className="text-base font-bold">
-                {selectedVariant?.compare_at_price && (
+                {selectedVariant?.compareAtPrice && (
                   <span className="line-through text-sm me-2 font-thin">
-                    ₹{selectedVariant?.compare_at_price}
+                    ₹{selectedVariant?.compareAtPrice?.amount}
                   </span>
                 )}
-                ₹{selectedVariant?.price || "N/A"}
+                ₹{selectedVariant?.price?.amount || "N/A"}
               </p>
             </div>
           </div>
           <div className="flex gap-2">
             <SelectInputUpgrade
-              selectList={singleProduct?.variants.map((variant: any) => ({
-                id: variant.id,
-                value: variant.title,
-              }))}
+              selectList={singleProduct?.variants.edges.map(
+                ({ node: variant }: any) => ({
+                  id: variant.id,
+                  value: variant.title,
+                })
+              )}
               value={selectedVariant?.id || ""}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 const variantId = e.target.value;
-                const variant = singleProduct?.variants.find(
-                  (v: any) => v.id == variantId
+                const variant = singleProduct?.variants.edges.find(
+                  ({ node: v }: any) => v.id == variantId
                 );
-                setSelectedVariant(variant);
+                setSelectedVariant(variant.node);
               }}
             />
             <QuantityInputUpgrade
@@ -220,7 +222,7 @@ const SingleProduct = () => {
               <div
                 dangerouslySetInnerHTML={{
                   __html:
-                    singleProduct?.body_html || "No description available",
+                    singleProduct?.description || "No description available",
                 }}
               />
             </Dropdown>
@@ -238,10 +240,13 @@ const SingleProduct = () => {
             <ProductItem
               key={product.id}
               id={product.id}
-              image={product.images?.[0]?.src || ""}
+              image={product.images?.edges[0].node?.src || ""}
               title={product.title}
               category={product.product_type}
-              price={product.variants?.[0]?.price || "N/A"}
+              price={product.variants?.edges[0].node?.price.amount || "N/A"}
+              compareAtPrice={
+                product.variants?.edges[0].node?.compareAtPrice.amount
+              }
             />
           ))}
         </div>

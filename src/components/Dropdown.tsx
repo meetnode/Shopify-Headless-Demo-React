@@ -17,7 +17,9 @@ const Dropdown = ({
         className="flex justify-between items-center border-b border-black/30 h-14 cursor-pointer"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <p className="text-black/95 text-base">{dropdownTitle}</p>
+        {dropdownTitle && (
+          <div className="text-black/95 text-base">{dropdownTitle}</div>
+        )}
         {isOpen ? (
           <HiChevronUp className="text-base" />
         ) : (

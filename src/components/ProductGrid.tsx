@@ -14,14 +14,14 @@ const ProductGrid = ({ products }: { products?: Product[] }) => {
             <ProductItem
               key={nanoid()}
               id={product.id}
-              variantId={product.variants[0].id}
-              image={product.images[0].src}
+              variantId={product.variants.edges[0].node.id}
+              image={product.images.edges[0].node.src}
               title={product.title}
               category={product.category}
-              price={product.variants[0].price}
+              price={product.variants.edges[0].node.price.amount}
               popularity={product.popularity}
-              compareAtPrice={product.variants[0].compare_at_price}
-              stock={product.variants[0].inventory_quantity}
+              compareAtPrice={product.variants.edges[0].node.compareAtPrice.amount}
+              stock={product.variants.edges[0].node.inventory_quantity}
             />
           );
         })}

@@ -1,4 +1,3 @@
-import axios from "../axios/custom";
 import client from "../config/storefront";
 import {
   CUSTOMER_ACCESS_TOKEN,
@@ -12,7 +11,7 @@ const customerApi = {
     });
 
     if (response.errors && response.errors?.message) {
-      throw new Error(response.errors?.message || "Something went wrong2");
+      throw new Error(response.errors?.message || "Something went wrong");
     }
 
     if (response.data?.customerCreate?.customerUserErrors?.length) {

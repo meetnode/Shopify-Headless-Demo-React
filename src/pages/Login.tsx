@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components";
-// import { checkLoginFormData } from "../utils/checkLoginFormData";
-// import customFetch from "../axios/custom";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { login } from "../features/auth/authSlice";
@@ -15,8 +13,11 @@ const Login = () => {
     e.preventDefault();
     try {
       store.dispatch(login(data));
-      toast.success("You logged in successfully");
-      navigate("/");
+      const user = localStorage.getItem("user");
+      if (user) {
+        toast.success("You logged in successfully");
+        navigate("/");
+      }
     } catch (error) {
       console.error("Login failed", error);
       toast.error("An error occurred during login. Please try again.");
@@ -26,7 +27,6 @@ const Login = () => {
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
-      // toast.success("You are already logged in");
       navigate("/");
     }
   }, []);

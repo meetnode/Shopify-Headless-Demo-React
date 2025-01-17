@@ -1,11 +1,11 @@
-import axios from "../axios/custom";
+import client from "../config/storefront";
+import { GET_ALL_COLLECTIONS } from "../constants/collectionQuery";
 
 const collectionApi = {
   async all() {
-    const response = await axios.get("/collections");
-    const { data } = JSON.parse(response.data);
-    const res = data.collections.edges.map((item: any) => item.node);
-    return res;
+    const { data } = await client.request(GET_ALL_COLLECTIONS);
+    const response = data?.collections.edges.map((item: any) => item.node);
+    return response;
   },
 };
 

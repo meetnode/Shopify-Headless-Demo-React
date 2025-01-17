@@ -42,7 +42,7 @@ const ProductItem = ({
   return (
     <div className="w-[350px] flex flex-col gap-2 justify-center max-md:w-[300px] border border-black rounded-sm p-5">
       <Link
-        to={`/product/${id}`}
+        to={`/product/${id.replace("gid://shopify/Product/", "")}`}
         className="w-full h-[400px] max-md:h-[200px] overflow-hidden"
       >
         <img
@@ -52,7 +52,7 @@ const ProductItem = ({
         />
       </Link>
       <Link
-        to={`/product/${id}`}
+        to={`/product/${id.replace("gid://shopify/Product/", "")}`}
         className="text-black text-center text-xl tracking-[1.02px] max-md:text-xl"
       >
         <h4>{title}</h4>

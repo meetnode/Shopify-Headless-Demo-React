@@ -97,11 +97,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-function fetchProducts() {
-  
-}
-fetchProducts();
 function App() {
   return <RouterProvider router={router} />;
 }
